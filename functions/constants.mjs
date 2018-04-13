@@ -16,3 +16,7 @@ export const CONSTRUCTOR_NAME_OF_OBJECT_PROTOTYPES = {
   ASYNC_FUNCTION: 'AsyncFunction',
   FUNCTION: 'Function'
 }
+
+export const OBJECT_PROTOTYPES = {
+  ASYNC_FUNCTION: '[object AsyncFunction]'
+}
