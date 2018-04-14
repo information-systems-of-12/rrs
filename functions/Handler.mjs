@@ -67,11 +67,9 @@ export default class Handler extends Component {
       if ( currentState.isConstructed === false ){
         newStateKeyValues.isConstructed = true
       }
-      debugger
       return newStateKeyValues
 
     } else {
-      debugger
       return nextProps
 
     }

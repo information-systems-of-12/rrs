@@ -1,7 +1,6 @@
 import { MESSAGES, PREVIOUSLY_REQUESTED_PATH_KEY } from './constants.mjs'
 import findRouteObject from './findRouteObject.mjs'
 import checkIfRedirect from './checkIfRedirect.mjs'
-import pushHistoryState from './Handler_pushHistoryState.mjs'
 
 export default ( props, state, redirectTo ) => {
   const path = window.location.pathname + window.location.search
@@ -38,24 +37,24 @@ export default ( props, state, redirectTo ) => {
 
         // previously requested route before redirect
         if ( routeObject3 ){
-          return { path: previouslyRequestedURL, routeObject: routeObject3, matchResult: matchResult3, documentTitle: routeObject3.documentTitle }
+          return { path: previouslyRequestedURL, routeObject: routeObject3, matchResult: matchResult3, documentTitle: routeObject3.documentTitle, isRedirected: true }
 
         } else {
-          return { path: routeObject2.fullPath, routeObject: routeObject2, matchResult: matchResult2, documentTitle: routeObject2.documentTitle }
+          return { path: routeObject2.fullPath, routeObject: routeObject2, matchResult: matchResult2, documentTitle: routeObject2.documentTitle, isRedirected: true }
 
         }
 
       } else {
-        return { path: routeObject2.fullPath, routeObject: routeObject2, matchResult: matchResult2, documentTitle: routeObject2.documentTitle }
+        return { path: routeObject2.fullPath, routeObject: routeObject2, matchResult: matchResult2, documentTitle: routeObject2.documentTitle, isRedirected: true }
 
       }
     } else {
-      return { path: path, routeObject: routeObject, matchResult: matchResult, documentTitle: routeObject.documentTitle }
+      return { path: path, routeObject: routeObject, matchResult: matchResult, documentTitle: routeObject.documentTitle, isRedirected: false }
 
     }
     
   } else {
-    return { path: null, routeObject: null, matchResult: null, documentTitle: MESSAGES.COMPONENTS_NOT_FOUND }
+    return { path: null, routeObject: null, matchResult: null, documentTitle: MESSAGES.COMPONENTS_NOT_FOUND, isRedirected: true }
     
   }
 
