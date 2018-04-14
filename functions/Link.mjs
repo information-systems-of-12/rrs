@@ -15,8 +15,7 @@ export default class Link extends Component {
     const { path } = this.props
     e.preventDefault()
     if ( window.location.pathname !== path ){
-      const stateObj = { }
-      history.pushState( stateObj, path, path )
+      history.pushState( {}, null, path )
     }
     changePathTo( path )
   }

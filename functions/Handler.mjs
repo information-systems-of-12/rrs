@@ -52,9 +52,6 @@ export default class Handler extends Component {
     if ( typeof window !== 'undefined' ){
 
       const { path, routeObject, matchResult, documentTitle } = _checkPathOnClient( nextProps, currentState )
-      _pushHistoryState( {}, documentTitle, path )
-      _updateDocumentTitle( documentTitle )
-
       const { pathParameters, pathSearchParameters } = getPathParameters( matchResult )
       preloadDataState( {
         ...nextProps,
@@ -70,9 +67,11 @@ export default class Handler extends Component {
       if ( currentState.isConstructed === false ){
         newStateKeyValues.isConstructed = true
       }
+      debugger
       return newStateKeyValues
 
     } else {
+      debugger
       return nextProps
 
     }
@@ -90,10 +89,8 @@ export default class Handler extends Component {
       this.changePath()
     }
     window.addEventListener( 'popstate', ( e ) => {
-      // debugger
-      this.checkPath( true )
+      this.checkPath()
     } )
-
   }
 
 
@@ -102,10 +99,10 @@ export default class Handler extends Component {
     const newPath = path
     const currentPath = window.location.pathname + window.location.search
     if ( currentPath !== newPath ){
-      // debugger
-      _pushHistoryState( {}, newPath, newPath )
+      _pushHistoryState( {}, null, newPath )
     }
-    this.changePath( true )
+
+    this.changePath()
   }
 
 
@@ -115,15 +112,13 @@ export default class Handler extends Component {
   }
 
 
-
-
-  async changePath( isFromRedirectTo ){
+  async changePath(){
     if ( this.props.onPathChange !== undefined ){
       const C = Object.getPrototypeOf( this.props.onPathChange ).constructor.name
       if ( C === CONSTRUCTOR_NAME_OF_OBJECT_PROTOTYPES.FUNCTION || C === CONSTRUCTOR_NAME_OF_OBJECT_PROTOTYPES.ASYNC_FUNCTION ){
         return this.props.onPathChange( { 
           dataStateStorage: this.props.dataStateStorage,
-          checkPath: async () => await this.checkPath( isFromRedirectTo ),
+          checkPath: async () => await this.checkPath(),
           redirectTo: this.redirectTo,
           configuration: this.props.configuration,
           providerConfiguration: this.props.providerConfiguration,
@@ -131,24 +126,26 @@ export default class Handler extends Component {
         } )
       }
     } else {
-      await this.checkPath( isFromRedirectTo )
+      await this.checkPath()
+
     }
 
   }
 
 
 
+  async checkPath(){
+    const { path, routeObject, matchResult, documentTitle, isRedirected } = _checkPathOnClient( this.props, this.state )
 
-  async checkPath( isFromRedirectTo ){
-    const { path, routeObject, matchResult, documentTitle } = _checkPathOnClient( this.props, this.state )
-    // debugger
-    if ( isFromRedirectTo !== true ){
-      // debugger
-      _pushHistoryState( {}, documentTitle, path )
+    if ( isRedirected === true ){
+      _pushHistoryState( {}, null, path )
+      /*
+       april 14, 2018 - fix: set right document title when redirect ( chrome only? )
+      */
+      _updateDocumentTitle( path )
     }
     _updateDocumentTitle( documentTitle )
     const { pathParameters, pathSearchParameters } = getPathParameters( matchResult )
-    // debugger
     await preloadDataState( {
       ...this.props,
       ...this.state,
@@ -162,6 +159,9 @@ export default class Handler extends Component {
     this.setState( { path, routeObject, matchResult, documentTitle } )
 
   }
+
+
+
 
 
  

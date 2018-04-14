@@ -1,5 +1,5 @@
 export default documentTitle => {
   if ( documentTitle ){
-    document.title = documentTitle
+    window.document.title = documentTitle
   }
 }
