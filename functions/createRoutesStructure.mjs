@@ -5,7 +5,7 @@ export default ( configuration, providerConfiguration, createRoutesScheme ) => {
 
   try {
 
-    const routesScheme = createRoutesScheme( Object.assign( {}, configuration, internalConstants ) )
+    const routesScheme = createRoutesScheme( Object.assign( {}, configuration, internalConstants ), providerConfiguration )
 
     if ( !Array.isArray( routesScheme ) && typeof routesScheme === 'object' && routesScheme.component !== undefined ){
 
