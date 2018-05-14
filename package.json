@@ -1,6 +1,6 @@
 {
   "name": "iso12-rrs",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "description": "react routing service",
   "main": "./functions/main.mjs",
   "scripts": {
