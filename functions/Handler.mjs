@@ -84,10 +84,11 @@ export default class Handler extends Component {
     document.title = this.state.documentTitle
     const path = window.location.pathname + window.location.search
     if ( this.props.useOnPathChangeCallbackWhenComponentDidMount && this.props.useOnPathChangeCallbackWhenComponentDidMount === true ){
-      this.changePath()
+      this.changePath( path )
     }
     window.addEventListener( 'popstate', ( e ) => {
-      this.checkPath()
+      // this.checkPath()
+      this.changePath( window.location.pathname + window.location.search )
     } )
   }
 
@@ -100,7 +101,7 @@ export default class Handler extends Component {
       _pushHistoryState( {}, null, newPath )
     }
 
-    this.changePath()
+    this.changePath( newPath )
   }
 
 
@@ -110,11 +111,13 @@ export default class Handler extends Component {
   }
 
 
-  async changePath(){
+  async changePath( path ){
     if ( this.props.onPathChange !== undefined ){
+      // debugger
       const C = Object.getPrototypeOf( this.props.onPathChange ).constructor.name
       if ( C === CONSTRUCTOR_NAME_OF_OBJECT_PROTOTYPES.FUNCTION || C === CONSTRUCTOR_NAME_OF_OBJECT_PROTOTYPES.ASYNC_FUNCTION ){
-        return this.props.onPathChange( { 
+        return this.props.onPathChange( {
+          path,
           dataStateStorage: this.props.dataStateStorage,
           checkPath: async () => await this.checkPath(),
           redirectTo: this.redirectTo,
