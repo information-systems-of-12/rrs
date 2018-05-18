@@ -118,7 +118,7 @@ export default class Handler extends Component {
 
   async changePath( path ){
     if ( this.props.onPathChange !== undefined ){
-    
+      // debugger
       const C = Object.getPrototypeOf( this.props.onPathChange ).constructor.name
       if ( C === CONSTRUCTOR_NAME_OF_OBJECT_PROTOTYPES.FUNCTION || C === CONSTRUCTOR_NAME_OF_OBJECT_PROTOTYPES.ASYNC_FUNCTION ){
         return this.props.onPathChange( {
@@ -142,9 +142,9 @@ export default class Handler extends Component {
 
   async checkPath(){
     const { path, routeObject, matchResult, documentTitle, isRedirected } = _checkPathOnClient( this.props, this.state )
-    
+    debugger
     if ( isRedirected === true ){
-  
+      debugger
       _pushHistoryState( {}, null, path )
       /*
        april 14, 2018 - fix: set right document title when redirect ( chrome only? )
@@ -162,7 +162,7 @@ export default class Handler extends Component {
       pathSearchParameters,
       documentTitle
     } )
-
+    debugger
     this.setState( { path, routeObject, matchResult, documentTitle } )
 
   }

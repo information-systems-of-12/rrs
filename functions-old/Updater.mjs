@@ -31,8 +31,6 @@ export default class Updater extends Component {
         ...this.props.props
   
       },
-
-   
   
       prev )
       
