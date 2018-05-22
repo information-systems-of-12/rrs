@@ -24,7 +24,7 @@ export default ( configuration, providerConfiguration, createRoutesScheme ) => {
         let clearParentPaths = []
         for ( const layoutPath of route.parentPaths ){
           if ( layoutPath !== '/' && layoutPath !== '' ){
-            clearParentPaths.push( layoutPath.replace( /[\/]/g, '' ) )
+            clearParentPaths.push( layoutPath.replace( /(^[\/]|[\/]$)/g, '' ) )
           }
         }
   
