@@ -15,7 +15,7 @@ export default class Updater extends Component {
       return createElement( comp, {
   
         key: index,
-
+        alias: this.props.routeObject.alias,
         path: this.props.path,
         pathParameters: this.props.pathParameters,
         pathSearchParameters: this.props.pathSearchParameters,
