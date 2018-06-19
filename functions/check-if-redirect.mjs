@@ -1,58 +1,61 @@
-import getMatchResult from './getMatchResult.mjs'
-import findRouteObject from './findRouteObject.mjs'
+import getMatchResult from './get-match-result.mjs'
+import findRouteObject from './find-route-object.mjs'
 
-export default ( routesStructure, dataStateStorage, routeObject ) => {
+export default ( routesStructure, routeObject, otherParameters ) => {
 
   let redirectToPath = false
 
   if ( routeObject.redirects ){
+
+
     for ( const redirect of routeObject.redirects ){
 
       if ( Array.isArray( redirect ) ){
         for ( const ro of redirect ){
           /**
           @param { function } ro.if - callback - predicate
-          @param { string } ro.toPath - redirection path
+          @param { string } ro.path - redirection path
           **/
+         
+
           if ( ro.if && Object.prototype.toString.call( ro.if ) == '[object Function]' ){
-            const result = ro.if( dataStateStorage.getDataState() )
-  
+            
+            const result = ro.if( routesStructure, routeObject, otherParameters )
+            
             if ( result === true ){
-              redirectToPath = ro.toPath
+              redirectToPath = ro.path
               break
             }
   
           } else {
-            redirectToPath = ro.toPath
+            redirectToPath = ro.path
             break
           }
         }
         
       } else {
+
+
         /**
         @param { function } redirect.if - callback - predicate
-        @param { string } redirect.toPath - redirection path
+        @param { string } redirect.path - redirection path
         **/
         if ( redirect.if && Object.prototype.toString.call( redirect.if ) == '[object Function]' ){
-          const result = redirect.if( dataStateStorage.getDataState() )
+
+          const result = redirect.if( routesStructure, routeObject, otherParameters )
 
           if ( result === true ){
-            redirectToPath = redirect.toPath
+            redirectToPath = redirect.path
             break
           }
 
         } else {
-          redirectToPath = redirect.toPath
+          redirectToPath = redirect.path
           break
           
         }
 
       }
-      
-
-
-      
-      
 
     }
   }
@@ -60,6 +63,7 @@ export default ( routesStructure, dataStateStorage, routeObject ) => {
 
   if ( redirectToPath ){
     const findRouteObjectResult = findRouteObject( routesStructure, redirectToPath )
+  
     const routeObject2 = findRouteObjectResult.routeObject
     if ( routeObject2 ){
       return findRouteObjectResult

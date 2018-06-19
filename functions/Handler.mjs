@@ -1,175 +1,173 @@
 import * as React from 'react'
 const Component = React.default.Component
 const createElement = React.default.createElement
-import { changePathToContext, redirectToContext, changeDocumentTitleContext } from './contexts.mjs'
-import {
-  MESSAGES,
-  PREVIOUSLY_REQUESTED_PATH_KEY,
-  DEFAULT_OBJECT_ALIASES,
-  DEFAULT_ROUTE_PATHS,
-  DEFAULT_VIEW_ALIASES,
-  CONSTRUCTOR_NAME_OF_OBJECT_PROTOTYPES
-} from './constants.mjs'
-import createRoutesStructure from './createRoutesStructure.mjs'
-import getPathParameters from './getPathParameters.mjs'
-import preloadDataState from './preloadDataState.mjs'
-import _constructComponentsHierarchy from './Handler_constructComponentsHierarchy.mjs'
-import _checkPathOnClient from './Handler_checkPathOnClient.mjs'
-import _pushHistoryState from './Handler_pushHistoryState.mjs'
-import _updateDocumentTitle from './Handler_updateDocumentTitle.mjs'
+
+import { MESSAGES, PREVIOUSLY_REQUESTED_PATH_KEY } from './constants.mjs'
+import findRouteObject from './find-route-object.mjs'
+import checkIfRedirect from './check-if-redirect.mjs'
+
+import getPathParameters from './get-path-parameters.mjs'
+import createRoutesComposition from './create-routes-composition.mjs'
+import createRoutesStructure from './create-routes-structure.mjs'
 
 export default class Handler extends Component {
 
   constructor( props ){
     super( props )
-    this.state = {}
-    this.state.path = null
-    this.state.documentTitle = null
-    this.state.routeObject = null
-    this.state.matchResult = null
+    this.routeComponentInstances = []
+
+    this.registerRouteComponentInstance = this.registerRouteComponentInstance.bind( this )
+    this.unregisterRouteComponentInstance = this.unregisterRouteComponentInstance.bind( this )
+
+    this.checkCurrentPathOnClient = this.checkCurrentPathOnClient.bind( this )
+    this.pushHistoryObject = this.pushHistoryObject.bind( this )
+
+    this.handlePopState = this.handlePopState.bind( this )
+
     if ( typeof window !== 'undefined' ){
-      /*
-      april 13, 2018 - modifications for using with iso12-rcss
-      */
-      this.state.routesStructure = props.routesStructure !== undefined ? props.routesStructure : createRoutesStructure( props.configuration, props.providerConfiguration, props.createRoutesScheme )
-    }
-    this.redirectTo = this.redirectTo.bind( this )
-    this.changeDocumentTitle = this.changeDocumentTitle.bind( this )
-    this.changePath = this.changePath.bind( this )
-    this.checkPath = this.checkPath.bind( this )
-  }
-
-  render(){
-    const componentsHierarchy = _constructComponentsHierarchy( this.props, this.state, this.redirectTo, this.changeDocumentTitle )
-    return createElement( changePathToContext.Provider, { value: this.changePath }, 
-      createElement( redirectToContext.Provider, { value: this.redirectTo },
-        componentsHierarchy
-      )
-    )
-  }
-
-  static getDerivedStateFromProps( nextProps, currentState ){
-    if ( typeof window !== 'undefined' ){
-
-      const { path, routeObject, matchResult, documentTitle, isRedirected } = _checkPathOnClient( nextProps, currentState )
-
-      if ( isRedirected ){
-        _pushHistoryState( {}, null, path )
-      }
-      // debugger
-      const { pathParameters, pathSearchParameters } = getPathParameters( matchResult )
-      preloadDataState( {
-        ...nextProps,
-        ...currentState,
-        routeObject,
-        path,
-        pathParameters,
-        pathSearchParameters,
-        documentTitle
-      } )
-
-      const newStateKeyValues = { path, routeObject, matchResult, documentTitle }
-      if ( currentState.isConstructed === false ){
-        newStateKeyValues.isConstructed = true
-      }
-      return newStateKeyValues
-
-    } else {
-      return nextProps
+      this.routesStructure = props.routesStructure !== undefined
+      ? props.routesStructure
+      : createRoutesStructure( props.configuration, props.providerConfiguration, null, props.createRoutesScheme )
 
     }
     
   }
 
+  render(){
+
+    return typeof window !== 'undefined'
+      ? createRoutesComposition( { 
+        configuration: this.props.configuration,
+        providerConfiguration: this.props.providerConfiguration, 
+        routesScheme: null,
+        createRoutesScheme: this.props.createRoutesScheme,
+        path: this.props.path,
+        services: this.props.services,
+        onPathChange: this.props.onPathChange,
+        checkCurrentPathOnClient: this.checkCurrentPathOnClient,
+        routesStructure: this.routesStructure,
+        registerRouteComponentInstance: this.registerRouteComponentInstance,
+        unregisterRouteComponentInstance: this.unregisterRouteComponentInstance,
+        pushHistoryObject: this.pushHistoryObject
+      } )
+      : this.props.children
+
+  }
+
+
+  setDocumentTitle( documentTitle ){
+    window.document.title = documentTitle
+  }
+
+  registerRouteComponentInstance( instance ){
+    this.routeComponentInstances.push( instance )
+  }
+
+  unregisterRouteComponentInstance( instance ){
+    this.routeComponentInstances.splice( this.routeComponentInstances.indexOf( instance ), 1 )
+  }
+
+
+  async pushHistoryObject( path ){
+    window.history.pushState( {}, null, path )
+
+    if ( this.props.onPathChange ){
+      const redirectPath = await this.props.onPathChange( { currentPath: window.location.pathname + window.location.search } )
+      if ( redirectPath ){
+        window.history.pushState( {}, null, redirectPath )
+      }
+    }
+
+    this.routeComponentInstances.forEach( instance => instance.setState( { updated: true } ) )
+  }
+
+
+  checkCurrentPathOnClient( routesStructure, currentPath ){
+    const findRouteObjectResult = findRouteObject( routesStructure, currentPath )
+    const routeObject = findRouteObjectResult.routeObject
+    const matchResult = findRouteObjectResult.matchResult
+    
+    /*
+    current route
+    */
+    if ( routeObject ){
+      const findRouteObjectResult2 = checkIfRedirect( routesStructure, routeObject, this.props.services )
+      const routeObject2 = findRouteObjectResult2.routeObject
+      const matchResult2 = findRouteObjectResult2.matchResult
+      
+      /*
+      redirected route
+      */
+      if ( routeObject2 ){
+        let previouslyRequestedURL = null
+        const previouslyRequestedURLQueryFieldIndex = currentPath.indexOf( PREVIOUSLY_REQUESTED_PATH_KEY )
+        if ( previouslyRequestedURLQueryFieldIndex != -1 ){
+          previouslyRequestedURL = currentPath.slice( previouslyRequestedURLQueryFieldIndex + PREVIOUSLY_REQUESTED_PATH_KEY.length )
+        }
+
+        if ( previouslyRequestedURL ){
+          const findRouteObjectResult3 = findRouteObject( state.routesStructure, previouslyRequestedURL )
+          const routeObject3 = findRouteObjectResult3.routeObject
+          const matchResult3 = findRouteObjectResult3.matchResult
+
+          /*
+          previously requested route before redirect
+          */
+          if ( routeObject3 ){
+            return { path: previouslyRequestedURL, routeObject: routeObject3, matchResult: matchResult3, documentTitle: routeObject3.documentTitle, isRedirected: true }
+
+          } else {
+            return { path: routeObject2.fullPath, routeObject: routeObject2, matchResult: matchResult2, documentTitle: routeObject2.documentTitle, isRedirected: true }
+
+          }
+
+        } else {
+          return { path: routeObject2.fullPath, routeObject: routeObject2, matchResult: matchResult2, documentTitle: routeObject2.documentTitle, isRedirected: true }
+
+        }
+      } else {
+        return { path: routeObject.fullPath, routeObject: routeObject, matchResult: matchResult, documentTitle: routeObject.documentTitle, isRedirected: false }
+  
+      }
+
+    } else {
+      return { path: null, routeObject: null, matchResult: null, documentTitle: MESSAGES.COMPONENTS_NOT_FOUND, isRedirected: true }
+      
+    }
+
+
+  }
 
 
 
 
   componentDidMount(){
-    document.title = this.state.documentTitle
-    const path = window.location.pathname + window.location.search
-    if ( this.props.useOnPathChangeCallbackWhenComponentDidMount && this.props.useOnPathChangeCallbackWhenComponentDidMount === true ){
-      this.changePath( path )
-    }
-    window.addEventListener( 'popstate', ( e ) => {
-      // this.checkPath()
-      this.changePath( window.location.pathname + window.location.search )
-    } )
+    window.addEventListener( 'popstate', this.handlePopState )
   }
 
 
+  async handlePopState(){
 
-  redirectTo( path ){
-    const newPath = path
-    const currentPath = window.location.pathname + window.location.search
-    if ( currentPath !== newPath ){
-      _pushHistoryState( {}, null, newPath )
-    }
-
-    this.changePath( newPath )
-  }
-
-
-  changeDocumentTitle( documentTitle ){
-    _updateDocumentTitle( documentTitle )
-    this.setState( { documentTitle } )
-  }
-
-
-  async changePath( path ){
-    if ( this.props.onPathChange !== undefined ){
-    
-      const C = Object.getPrototypeOf( this.props.onPathChange ).constructor.name
-      if ( C === CONSTRUCTOR_NAME_OF_OBJECT_PROTOTYPES.FUNCTION || C === CONSTRUCTOR_NAME_OF_OBJECT_PROTOTYPES.ASYNC_FUNCTION ){
-        return this.props.onPathChange( {
-          path,
-          dataStateStorage: this.props.dataStateStorage,
-          checkPath: async () => await this.checkPath(),
-          redirectTo: this.redirectTo,
-          configuration: this.props.configuration,
-          providerConfiguration: this.props.providerConfiguration,
-          sideActions: this.props.sideActions
-        } )
+    if ( this.props.onPathChange ){
+      const redirectPath = await this.props.onPathChange( { currentPath: window.location.pathname + window.location.search } )
+      if ( redirectPath ){
+        window.history.pushState( {}, null, redirectPath )
       }
-    } else {
-      await this.checkPath()
-
     }
 
   }
 
 
 
-  async checkPath(){
-    const { path, routeObject, matchResult, documentTitle, isRedirected } = _checkPathOnClient( this.props, this.state )
-    
-    if ( isRedirected === true ){
+
+
+
+
   
-      _pushHistoryState( {}, null, path )
-      /*
-       april 14, 2018 - fix: set right document title when redirect ( chrome only? )
-      */
-      _updateDocumentTitle( path )
-    }
-    _updateDocumentTitle( documentTitle )
-    const { pathParameters, pathSearchParameters } = getPathParameters( matchResult )
-    await preloadDataState( {
-      ...this.props,
-      ...this.state,
-      routeObject,
-      path,
-      pathParameters,
-      pathSearchParameters,
-      documentTitle
-    } )
-
-    this.setState( { path, routeObject, matchResult, documentTitle } )
-
-  }
 
 
 
 
 
- 
+
 }
