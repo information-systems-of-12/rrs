@@ -24,7 +24,8 @@ export default parameters => {
     pushHistoryObject,
     registerRouteComponentInstance,
     unregisterRouteComponentInstance,
-    routesStructure
+    routesStructure,
+    routeObject
   } = parameters
 
 
@@ -36,7 +37,8 @@ export default parameters => {
     routesStructure,
     pushHistoryObject,
     registerRouteComponentInstance,
-    unregisterRouteComponentInstance
+    unregisterRouteComponentInstance,
+    routeObject
   }
 
   const formattedCurrentPath = path.replace( /[\/]+$/, '' )
