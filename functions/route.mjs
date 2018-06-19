@@ -64,6 +64,7 @@ export default class Route extends Component {
     nextState.currentPath = currentPath
     const routeStructureCheckingResult = typeof window !== 'undefined' ? nextProps.checkCurrentPathOnClient( nextProps.routesStructure, currentPath ) : null
 
+   
     if ( routeStructureCheckingResult && routeStructureCheckingResult.matchResult ){
       const { pathParameters, pathSearchParameters } = getPathParameters( routeStructureCheckingResult.matchResult )
       nextState.pathParameters = pathParameters
@@ -78,6 +79,14 @@ export default class Route extends Component {
       } else if ( nextProps.path === '' && nextProps.currentPath.startsWith( '/' ) ){
         nextState.matchResult = true
       }
+    } else {
+
+      if ( typeof window === 'undefined' ){
+        if ( nextProps.path === nextProps.routeObject.fullPath ){
+          nextState.matchResult = true
+        }
+      }
+
     }
 
     if ( routeStructureCheckingResult && routeStructureCheckingResult.routeObject && routeStructureCheckingResult.routeObject.fullPath === nextProps.path && nextProps.type === CONSTANTS.ROUTE_COMPONENT_TYPES.VIEW ){

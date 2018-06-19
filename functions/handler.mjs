@@ -28,7 +28,6 @@ export default class Handler extends Component {
       this.routesStructure = props.routesStructure !== undefined
       ? props.routesStructure
       : createRoutesStructure( props.configuration, props.providerConfiguration, null, props.createRoutesScheme )
-
     }
     
   }
@@ -156,18 +155,5 @@ export default class Handler extends Component {
     }
 
   }
-
-
-
-
-
-
-
-  
-
-
-
-
-
 
 }
