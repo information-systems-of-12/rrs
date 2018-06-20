@@ -13,9 +13,9 @@ export default class Route extends Component {
     this.handlePopState = this.handlePopState.bind( this )
   }
 
-  componentDidMount(){
-    this.props.registerRouteComponentInstance( this )
+  componentDidMount(){ 
     window.addEventListener( 'popstate', this.handlePopState )
+    this.props.registerRouteComponentInstance( this )
   }
 
   componentWillUnmount() {
@@ -51,13 +51,14 @@ export default class Route extends Component {
       nextState.matchResult = true
     }
     
+    // debugger
     this.setState( nextState )
 
   }
 
 
   static getDerivedStateFromProps( nextProps, prevState ){
-
+    // debugger
     const nextState = {}
     nextState.matchResult = false
     
@@ -65,7 +66,7 @@ export default class Route extends Component {
     nextState.currentPath = currentPath
     const routeStructureCheckingResult = typeof window !== 'undefined' ? nextProps.checkCurrentPathOnClient( nextProps.routesStructure, currentPath ) : null
 
-   
+    // debugger
     if ( routeStructureCheckingResult && routeStructureCheckingResult.matchResult ){
       const { pathParameters, pathSearchParameters } = getPathParameters( routeStructureCheckingResult.matchResult )
       nextState.pathParameters = pathParameters
@@ -93,20 +94,28 @@ export default class Route extends Component {
     if ( routeStructureCheckingResult && routeStructureCheckingResult.routeObject && routeStructureCheckingResult.routeObject.fullPath === nextProps.path && nextProps.type === CONSTANTS.ROUTE_COMPONENT_TYPES.VIEW ){
       nextState.matchResult = true
     }
-
+    
     return nextState
   }
 
 
   shouldComponentUpdate( nextProps, nextState ){
     if ( nextState.matchResult && this.state.matchResult && this.props.type === CONSTANTS.ROUTE_COMPONENT_TYPES.LAYOUT ){
+      // debugger
       return false
     }
+    // debugger
     return true
   }
 
 
   render() {
+
+    // const mr = this.state.matchResult
+    // const p = this.props.path
+    // const type = this.props.type
+    // debugger
+
     return this.state.matchResult
     
       ? createElement( this.props.component, {
@@ -121,7 +130,7 @@ export default class Route extends Component {
         this.props.children
       )
 
-      : this.props.children
+      : null
   }
 
 }

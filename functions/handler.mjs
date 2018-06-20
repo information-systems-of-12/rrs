@@ -72,6 +72,7 @@ export default class Handler extends Component {
     const checkingResult = this.checkCurrentPathOnClient( this.routesStructure, path )
 
     const currentPath = window.location.pathname + window.location.search
+    
 
     if ( checkingResult.isRedirected === true ){
 
@@ -104,6 +105,15 @@ export default class Handler extends Component {
         window.history.pushState( {}, null, redirectPath )
       }
     }
+
+    this.setDocumentTitle( checkingResult.documentTitle )
+
+    // const layouts = this.routeComponentInstances.filter( i => i.props.type === 'LAYOUT_ROUTE_COMPONENT' )
+    // const views = this.routeComponentInstances.filter( i => i.props.type === 'VIEW_ROUTE_COMPONENT' )
+
+    // const newRouteComponentInstances = [ ...layouts, ...views  ]
+    // // debugger
+    // newRouteComponentInstances.forEach( instance => instance.setState( { updated: true } ) )
 
     this.routeComponentInstances.forEach( instance => instance.setState( { updated: true } ) )
 
