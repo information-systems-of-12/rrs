@@ -19,7 +19,7 @@ export default class Route extends Component {
   }
 
   componentWillUnmount() {
-    this.unregisterRouteComponentInstance( this )
+    this.props.unregisterRouteComponentInstance( this )
     window.removeEventListener( 'popstate', this.handlePopState )
   }
 
@@ -42,7 +42,7 @@ export default class Route extends Component {
       const p = typeof window !== 'undefined' ? window.location.pathname : currentPath
       if ( p.includes( this.props.path ) ){
         nextState.matchResult = true
-      } else if ( nextProps.path === '' && nextProps.currentPath.startsWith( '/' ) ){
+      } else if ( this.props.path === '' && this.props.currentPath.startsWith( '/' ) ){
         nextState.matchResult = true
       }
     }
@@ -50,6 +50,7 @@ export default class Route extends Component {
     if ( routeStructureCheckingResult && routeStructureCheckingResult.routeObject.fullPath === this.props.path && this.props.type === CONSTANTS.ROUTE_COMPONENT_TYPES.VIEW ){
       nextState.matchResult = true
     }
+    
     this.setState( nextState )
 
   }

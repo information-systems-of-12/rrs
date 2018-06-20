@@ -68,7 +68,35 @@ export default class Handler extends Component {
 
 
   async pushHistoryObject( path ){
-    window.history.pushState( {}, null, path )
+    
+    const checkingResult = this.checkCurrentPathOnClient( this.routesStructure, path )
+
+    const currentPath = window.location.pathname + window.location.search
+
+    if ( checkingResult.isRedirected === true ){
+
+      
+      // const isStartsWith = currentPath.startsWith( checkingResult.path )
+
+      // if ( !isStartsWith ){
+      if ( currentPath === checkingResult.path ){
+        window.history.pushState( {}, null, checkingResult.path )
+
+      } else {
+        return
+
+      }
+      
+    } else {
+      if ( currentPath === path ){
+        return
+        
+      } else {
+        window.history.pushState( {}, null, path )
+
+      }
+      
+    }
 
     if ( this.props.onPathChange ){
       const redirectPath = await this.props.onPathChange( { currentPath: window.location.pathname + window.location.search } )
@@ -78,6 +106,7 @@ export default class Handler extends Component {
     }
 
     this.routeComponentInstances.forEach( instance => instance.setState( { updated: true } ) )
+
   }
 
 
@@ -91,7 +120,7 @@ export default class Handler extends Component {
     */
     if ( routeObject ){
       const findRouteObjectResult2 = checkIfRedirect( routesStructure, routeObject, this.props.services )
-      const routeObject2 = findRouteObjectResult2.routeObject
+      const routeObject2 = findRouteObjectResult2.routeObject 
       const matchResult2 = findRouteObjectResult2.matchResult
       
       /*
