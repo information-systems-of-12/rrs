@@ -116,9 +116,23 @@ export default class Route extends Component {
     // const type = this.props.type
     // debugger
 
-    return this.state.matchResult
-    
-      ? createElement( this.props.component, {
+    if ( this.state.matchResult ){
+      if ( this.props.parentComponent ){
+        return createElement( this.props.parentComponent, {}, 
+            createElement( this.props.component, {
+              path: this.props.path,
+              currentPath: this.state.currentPath,
+              pathParameters: this.state.pathParameters,
+              pathSearchParameters: this.state.pathSearchParameters,
+              redirect: this.props.pushHistoryObject,
+              setDocumentTitle: this.props.setDocumentTitle,
+              services: this.props.services
+            },
+            this.props.children
+          )
+        )
+      } else {
+        return createElement( this.props.component, {
           path: this.props.path,
           currentPath: this.state.currentPath,
           pathParameters: this.state.pathParameters,
@@ -129,8 +143,14 @@ export default class Route extends Component {
         },
         this.props.children
       )
+      }
+    } else {
+      return null
+    }
 
-      : null
+
+  
+  
   }
 
 }
