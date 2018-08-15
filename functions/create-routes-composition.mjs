@@ -42,7 +42,7 @@ export default parameters => {
   }
 
   const formattedCurrentPath = path.replace( /[\/]+$/, '' )
-  const _routesScheme = routesScheme ? routesScheme : createRoutesScheme( Object.assign( {}, configuration, internalConstants ), providerConfiguration )
+  const _routesScheme = routesScheme ? routesScheme : createRoutesScheme( { configuration: Object.assign( {}, configuration, internalConstants ), providerConfiguration, services } )
 
   if ( !Array.isArray( _routesScheme ) && typeof _routesScheme === 'object' && _routesScheme.component !== undefined ){
     let routes = []

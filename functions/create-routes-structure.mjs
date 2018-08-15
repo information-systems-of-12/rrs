@@ -1,10 +1,10 @@
 import URLPattern from 'url-pattern'
 import * as internalConstants from './constants.mjs'
 
-export default ( configuration, providerConfiguration, routesScheme, createRoutesScheme ) => {
+export default ( { configuration, providerConfiguration, services, routesScheme, createRoutesScheme } ) => {
 
   try {
-    const _routesScheme = routesScheme ? routesScheme : createRoutesScheme( Object.assign( {}, configuration, internalConstants ), providerConfiguration )
+    const _routesScheme = routesScheme ? routesScheme : createRoutesScheme( { configuration: Object.assign( {}, configuration, internalConstants ), providerConfiguration, services } )
 
     if ( !Array.isArray( _routesScheme ) && typeof _routesScheme === 'object' && _routesScheme.component !== undefined ){
   
