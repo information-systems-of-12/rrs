@@ -1,14 +1,18 @@
 import getMatchResult from './get-match-result.mjs'
 import findRouteObject from './find-route-object.mjs'
 
-export default ( routesStructure, routeObject, otherParameters ) => {
+export default ( { configuration, providerConfiguration, routesStructure, routeObject, services } ) => {
 
   let redirectToPath = false
+
 
   if ( routeObject.redirects ){
 
 
     for ( const redirect of routeObject.redirects ){
+
+      
+
 
       if ( Array.isArray( redirect ) ){
         for ( const ro of redirect ){
@@ -18,9 +22,11 @@ export default ( routesStructure, routeObject, otherParameters ) => {
           **/
          
 
+          
+
           if ( ro.if && Object.prototype.toString.call( ro.if ) == '[object Function]' ){
             
-            const result = ro.if( routesStructure, routeObject, otherParameters )
+            const result = ro.if( { configuration, providerConfiguration, routesStructure, routeObject, services } )
             
             if ( result === true ){
               redirectToPath = ro.path
@@ -42,7 +48,7 @@ export default ( routesStructure, routeObject, otherParameters ) => {
         **/
         if ( redirect.if && Object.prototype.toString.call( redirect.if ) == '[object Function]' ){
 
-          const result = redirect.if( routesStructure, routeObject, otherParameters )
+          const result = redirect.if( { configuration, providerConfiguration, routesStructure, routeObject, services } )
 
           if ( result === true ){
             redirectToPath = redirect.path

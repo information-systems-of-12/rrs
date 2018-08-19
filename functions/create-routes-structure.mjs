@@ -50,7 +50,26 @@ const recursive = ( routesStructure, root, _i, _path, parentPaths, parentCompone
     }
    
 
-    if ( root.component && !root.routes ) {
+
+    // if ( !root.component && !root.path ){
+    //   routesStructure.push( {
+    //     alias: root.alias,
+
+    //     path: root.path,
+    //     fullPath: _PATH,
+    //     fullPathRegularExpression: root.alias === '*' || root.path === '*' ? new URLPattern( _PATH ) : new URLPattern( _PATH + '(/)(?*)' ),
+        
+    //     component: root.component,
+    //     documentTitle: root.documentTitle,
+        
+    //     parentPaths,
+    //     parentComponents,
+    //     parentRedirects: root.redirect ? [ ...parentRedirects, root.redirect ] : parentRedirects
+    //   } )
+
+    // }
+
+    if ( !root.component && !root.routes ) {
 
       routesStructure.push( {
         alias: root.alias,
@@ -62,9 +81,28 @@ const recursive = ( routesStructure, root, _i, _path, parentPaths, parentCompone
         component: root.component,
         documentTitle: root.documentTitle,
         
-        parentPaths,
-        parentComponents,
-        parentRedirects
+        // parentPaths,
+        // parentComponents,
+        parentPaths: [ ...parentPaths, root.path ],
+        parentComponents: [ ...parentComponents, root.component ],
+        parentRedirects: root.redirect ? [ ...parentRedirects, root.redirect ] : parentRedirects
+      } )
+
+    } else if ( root.component && !root.routes ) {
+
+      routesStructure.push( {
+        alias: root.alias,
+
+        path: root.path,
+        fullPath: _PATH,
+        fullPathRegularExpression: root.alias === '*' || root.path === '*' ? new URLPattern( _PATH ) : new URLPattern( _PATH + '(/)(?*)' ),
+        
+        component: root.component,
+        documentTitle: root.documentTitle,
+        
+        parentPaths: [ ...parentPaths, root.path ],
+        parentComponents: [ ...parentComponents, root.component ],
+        parentRedirects: root.redirect ? [ ...parentRedirects, root.redirect ] : parentRedirects
       } )
 
 

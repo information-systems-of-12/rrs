@@ -129,7 +129,8 @@ export default class Handler extends Component {
     current route
     */
     if ( routeObject ){
-      const findRouteObjectResult2 = checkIfRedirect( routesStructure, routeObject, this.props.services )
+      // const findRouteObjectResult2 = checkIfRedirect( routesStructure, routeObject, this.props.services )
+      const findRouteObjectResult2 = checkIfRedirect( { configuration: this.props.configuration, providerConfiguration: this.props.providerConfiguration, routesStructure, routeObject, services: this.props.services } )
       const routeObject2 = findRouteObjectResult2.routeObject 
       const matchResult2 = findRouteObjectResult2.matchResult
       

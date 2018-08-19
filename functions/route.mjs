@@ -38,7 +38,8 @@ export default class Route extends Component {
     }
 
     if ( this.props.type === CONSTANTS.ROUTE_COMPONENT_TYPES.LAYOUT ){
-
+      // this.props.path, this.props.type
+      // debugger
       const p = typeof window !== 'undefined' ? window.location.pathname : currentPath
       if ( p.includes( this.props.path ) ){
         nextState.matchResult = true
@@ -50,7 +51,22 @@ export default class Route extends Component {
     if ( routeStructureCheckingResult && routeStructureCheckingResult.routeObject.fullPath === this.props.path && this.props.type === CONSTANTS.ROUTE_COMPONENT_TYPES.VIEW ){
       nextState.matchResult = true
     }
+
+
+    // if ( this.props.services && this.props.services.ISO12_RDMS && this.props.services.ISO12_RDMS.dataStateStorage ){
+    //   // debugger
+    //   const { currentPath: currentPathDS } = this.props.services.ISO12_RDMS.dataStateStorage.getDataState()
+    //   if ( currentPathDS !== nextState.currentPath ){
+    //     // debugger
+    //     this.props.services.ISO12_RDMS.dataStateStorage.set( { currentPath: nextState.currentPath } )
+    //   }
+      
+    // }
+    // if ( this.props.alias === 'main-layout' ){
+    //   debugger
+    // }
     
+    // this.props.path, this.props.alias, this.props.type
     // debugger
     this.setState( nextState )
 
@@ -77,8 +93,10 @@ export default class Route extends Component {
 
       const p = typeof window !== 'undefined' ? window.location.pathname : currentPath
       if ( p.includes( nextProps.path ) ){
+        // debugger
         nextState.matchResult = true
       } else if ( nextProps.path === '' && nextProps.currentPath.startsWith( '/' ) ){
+        // debugger
         nextState.matchResult = true
       }
     } else {
@@ -95,6 +113,11 @@ export default class Route extends Component {
       nextState.matchResult = true
     }
     
+
+    // if ( nextProps.alias === 'main-layout' ){
+    //   debugger
+    // }
+
     return nextState
   }
 
@@ -102,7 +125,8 @@ export default class Route extends Component {
   shouldComponentUpdate( nextProps, nextState ){
     if ( nextState.matchResult && this.state.matchResult && this.props.type === CONSTANTS.ROUTE_COMPONENT_TYPES.LAYOUT ){
       // debugger
-      return false
+      // return false
+      return true
     }
     // debugger
     return true
@@ -111,6 +135,10 @@ export default class Route extends Component {
 
   render() {
 
+    // if ( this.props.alias === 'main-layout' ){
+    //   debugger
+    // }
+
     // const mr = this.state.matchResult
     // const p = this.props.path
     // const type = this.props.type
@@ -118,7 +146,17 @@ export default class Route extends Component {
 
     if ( this.state.matchResult ){
       if ( this.props.parentComponent ){
-        return createElement( this.props.parentComponent, {}, 
+        // debugger
+        return createElement( this.props.parentComponent, {
+            path: this.props.path,
+            currentPath: this.state.currentPath,
+            pathParameters: this.state.pathParameters,
+            pathSearchParameters: this.state.pathSearchParameters,
+            redirect: this.props.pushHistoryObject,
+            setDocumentTitle: this.props.setDocumentTitle,
+            services: this.props.services,
+            providerConfiguration: this.props.providerConfiguration
+          }, 
             createElement( this.props.component, {
               path: this.props.path,
               currentPath: this.state.currentPath,
@@ -126,12 +164,15 @@ export default class Route extends Component {
               pathSearchParameters: this.state.pathSearchParameters,
               redirect: this.props.pushHistoryObject,
               setDocumentTitle: this.props.setDocumentTitle,
-              services: this.props.services
+              services: this.props.services,
+              providerConfiguration: this.props.providerConfiguration
             },
             this.props.children
           )
         )
       } else {
+
+        // debugger
         return createElement( this.props.component, {
           path: this.props.path,
           currentPath: this.state.currentPath,
@@ -139,7 +180,8 @@ export default class Route extends Component {
           pathSearchParameters: this.state.pathSearchParameters,
           redirect: this.props.pushHistoryObject,
           setDocumentTitle: this.props.setDocumentTitle,
-          services: this.props.services
+          services: this.props.services,
+          providerConfiguration: this.props.providerConfiguration
         },
         this.props.children
       )
