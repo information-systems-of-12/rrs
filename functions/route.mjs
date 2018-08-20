@@ -123,13 +123,33 @@ export default class Route extends Component {
 
 
   shouldComponentUpdate( nextProps, nextState ){
-    if ( nextState.matchResult && this.state.matchResult && this.props.type === CONSTANTS.ROUTE_COMPONENT_TYPES.LAYOUT ){
-      // debugger
-      // return false
-      return true
+
+    if ( this.props.type === CONSTANTS.ROUTE_COMPONENT_TYPES.LAYOUT && this.state.currentPath !== nextState.currentPath && this.props.shouldComponentUpdateOnCurrentPathChange === false ){
+      return false
     }
-    // debugger
+
     return true
+
+
+
+    // debugger
+    // if ( this.state.currentPath !== nextState.currentPath && this.state.shouldComponentUpdateOnCurrentPathChange === true ){
+    //   // debugger
+    //   return true
+    // } else if ( this.state.currentPath !== nextState.currentPath && this.state.shouldComponentUpdateOnCurrentPathChange === false ){
+    //   // debugger
+    //   return false
+    // }
+
+    // return true
+    // // if ( nextState.matchResult && this.state.matchResult && this.props.type === CONSTANTS.ROUTE_COMPONENT_TYPES.LAYOUT ){
+    // if ( nextState.matchResult && this.state.matchResult && this.props.type === CONSTANTS.ROUTE_COMPONENT_TYPES.LAYOUT && this.props.shouldComponentUpdateOnCurrentPathChange === true ){
+    //   // debugger
+    //   // return false
+    //   return true
+    // }
+    // // debugger
+    // return true
   }
 
 

@@ -158,6 +158,7 @@ const recursive = ( currentPath, root, _i, _path, additional, parentComponent ) 
           currentPath,
           type: root.routes ? ROUTE_COMPONENT_TYPES.LAYOUT : ROUTE_COMPONENT_TYPES.VIEW,
           documentTitle: root.documentTitle,
+          shouldComponentUpdateOnCurrentPathChange: root.shouldComponentUpdateOnCurrentPathChange === undefined || root.shouldComponentUpdateOnCurrentPathChange === null ? true : root.shouldComponentUpdateOnCurrentPathChange,
           ...additional
         },
 
