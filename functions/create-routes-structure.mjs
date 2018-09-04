@@ -44,7 +44,7 @@ const recursive = ( routesStructure, root, _i, _path, parentPaths, parentCompone
       _PATH = _path + '/' + root.path.replace( /[\/]/g, '' )
     } else if ( !root.path ){
       _PATH = _path
-      // console.log( root, _PATH )
+   
     } else {
       _PATH = _path
     }
@@ -83,7 +83,7 @@ const recursive = ( routesStructure, root, _i, _path, parentPaths, parentCompone
         
         // parentPaths,
         // parentComponents,
-        parentPaths: [ ...parentPaths, root.path ],
+        parentPaths: root.path ? [ ...parentPaths, root.path ] : parentPaths,
         parentComponents: [ ...parentComponents, root.component ],
         parentRedirects: root.redirect ? [ ...parentRedirects, root.redirect ] : parentRedirects
       } )
@@ -100,9 +100,12 @@ const recursive = ( routesStructure, root, _i, _path, parentPaths, parentCompone
         component: root.component,
         documentTitle: root.documentTitle,
         
-        parentPaths: [ ...parentPaths, root.path ],
-        parentComponents: [ ...parentComponents, root.component ],
-        parentRedirects: root.redirect ? [ ...parentRedirects, root.redirect ] : parentRedirects
+        // parentPaths: [ ...parentPaths, root.path ],
+        // parentComponents: [ ...parentComponents, root.component ],
+        // parentRedirects: root.redirect ? [ ...parentRedirects, root.redirect ] : parentRedirects
+        parentPaths: [ ...parentPaths ],
+        parentComponents: [ ...parentComponents ],
+        parentRedirects: root.redirect ? [ ...parentRedirects ] : parentRedirects
       } )
 
 
@@ -112,7 +115,7 @@ const recursive = ( routesStructure, root, _i, _path, parentPaths, parentCompone
       root.routes.map( ( r, i ) => {
      
 
-        const _parentPaths = [ ...parentPaths, root.path ]
+        const _parentPaths = root.path ? [ ...parentPaths, root.path ] : parentPaths
         const _parentComponents = [ ...parentComponents, root.component ]
         const _parentRedirects = root.redirect ? [ ...parentRedirects, root.redirect ] : parentRedirects
         

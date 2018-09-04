@@ -73,13 +73,6 @@ const recursive = ( currentPath, root, _i, _path, additional, parentComponent ) 
 
     
     
-    
-    // if ( root.component ){
-
-    // }
-
-
-
     // root.path === null
 
     // !root.routes
@@ -145,8 +138,8 @@ const recursive = ( currentPath, root, _i, _path, additional, parentComponent ) 
     // }
 
 
-      if ( root.component && root.path ){
-        // console.log( '2', root.alias )
+      if ( root.component && ( root.path || !root.path ) ){
+        
         return createElement( Route, {
           // return root.component ? createElement( Route, {
           key: _i,
@@ -165,7 +158,6 @@ const recursive = ( currentPath, root, _i, _path, additional, parentComponent ) 
         root.routes ? root.routes.map( ( r, i ) => {
 
           if ( r && !r.path && r.routes && r.component ) {
-            // console.log( '3', r.alias )
             return r.routes.map( ( dr, xi ) => {
               return recursive( currentPath, dr, _i + i + xi, _PATH, additional, r.component )
             } )
