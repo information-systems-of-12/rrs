@@ -22,8 +22,6 @@ export default class Handler extends Component {
     this.checkCurrentPathOnClient = this.checkCurrentPathOnClient.bind( this )
     this.pushHistoryObject = this.pushHistoryObject.bind( this )
 
-    this.handlePopState = this.handlePopState.bind( this )
-
     if ( typeof window !== 'undefined' ){
       this.routesStructure = props.routesStructure !== undefined
       ? props.routesStructure
@@ -81,7 +79,7 @@ export default class Handler extends Component {
 
       // if ( !isStartsWith ){
       if ( currentPath === checkingResult.path ){
-        window.history.pushState( {}, null, checkingResult.path )
+        window.history.pushState( {}, checkingResult.path, checkingResult.path )
 
       } else {
         return
@@ -93,7 +91,7 @@ export default class Handler extends Component {
         return
         
       } else {
-        window.history.pushState( {}, null, path )
+        window.history.pushState( {}, path, path )
 
       }
       
@@ -102,7 +100,7 @@ export default class Handler extends Component {
     if ( this.props.onPathChange ){
       const redirectPath = await this.props.onPathChange( { currentPath: window.location.pathname + window.location.search } )
       if ( redirectPath ){
-        window.history.pushState( {}, null, redirectPath )
+        window.history.pushState( {}, redirectPath, redirectPath )
       }
     }
 
@@ -112,7 +110,6 @@ export default class Handler extends Component {
     // const views = this.routeComponentInstances.filter( i => i.props.type === 'VIEW_ROUTE_COMPONENT' )
 
     // const newRouteComponentInstances = [ ...layouts, ...views  ]
-    // // debugger
     // newRouteComponentInstances.forEach( instance => instance.setState( { updated: true } ) )
 
     this.routeComponentInstances.forEach( instance => instance.setState( { updated: true } ) )
@@ -120,7 +117,7 @@ export default class Handler extends Component {
   }
 
 
-  checkCurrentPathOnClient( routesStructure, currentPath ){
+  checkCurrentPathOnClient( routesStructure, currentPath, isFromRouteComponent ){
     const findRouteObjectResult = findRouteObject( routesStructure, currentPath )
     const routeObject = findRouteObjectResult.routeObject
     const matchResult = findRouteObjectResult.matchResult
@@ -130,7 +127,7 @@ export default class Handler extends Component {
     */
     if ( routeObject ){
       // const findRouteObjectResult2 = checkIfRedirect( routesStructure, routeObject, this.props.services )
-      const findRouteObjectResult2 = checkIfRedirect( { configuration: this.props.configuration, providerConfiguration: this.props.providerConfiguration, routesStructure, routeObject, services: this.props.services } )
+      const findRouteObjectResult2 = !isFromRouteComponent ? checkIfRedirect( { configuration: this.props.configuration, providerConfiguration: this.props.providerConfiguration, routesStructure, routeObject, services: this.props.services } ) : {}
       const routeObject2 = findRouteObjectResult2.routeObject 
       const matchResult2 = findRouteObjectResult2.matchResult
       
@@ -174,25 +171,6 @@ export default class Handler extends Component {
       
     }
 
-
-  }
-
-
-
-
-  componentDidMount(){
-    window.addEventListener( 'popstate', this.handlePopState )
-  }
-
-
-  async handlePopState(){
-
-    if ( this.props.onPathChange ){
-      const redirectPath = await this.props.onPathChange( { currentPath: window.location.pathname + window.location.search } )
-      if ( redirectPath ){
-        window.history.pushState( {}, null, redirectPath )
-      }
-    }
 
   }
 

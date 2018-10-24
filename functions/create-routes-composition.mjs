@@ -28,7 +28,6 @@ export default parameters => {
     routeObject
   } = parameters
 
-
   
   const additional = {
     services,
@@ -42,6 +41,7 @@ export default parameters => {
     configuration,
     providerConfiguration,
   }
+  
 
   const formattedCurrentPath = path.replace( /[\/]+$/, '' )
   const _routesScheme = routesScheme ? routesScheme : createRoutesScheme( { configuration: Object.assign( {}, configuration, internalConstants ), providerConfiguration, services } )
@@ -57,6 +57,8 @@ export default parameters => {
 const recursive = ( currentPath, root, _i, _path, additional, parentComponent ) => {
 
   if ( root !== undefined ){
+
+
     let _PATH = ''
     if ( root.path === '/' ){
       _PATH = _path
@@ -68,9 +70,6 @@ const recursive = ( currentPath, root, _i, _path, additional, parentComponent ) 
       _PATH = _path
     }
     
-
-    const _PATH_REG_EXP = root.alias === '*' || root.path === '*' ? new URLPattern( _PATH ) : new URLPattern( _PATH + '(/)(?*)' )
-
     
     
     // root.path === null
@@ -146,8 +145,12 @@ const recursive = ( currentPath, root, _i, _path, additional, parentComponent ) 
           alias: root.alias,
           parentComponent: parentComponent,
           component: root.component,
+
           path: _PATH,
-          pathRegExp: _PATH_REG_EXP,
+     
+          fullPath: _PATH,
+          fullPathRegularExpression: root.alias === '*' || root.path === '*' ? new URLPattern( _PATH ) : new URLPattern( _PATH + '(/)(?*)' ),
+
           currentPath,
           type: root.routes ? ROUTE_COMPONENT_TYPES.LAYOUT : ROUTE_COMPONENT_TYPES.VIEW,
           documentTitle: root.documentTitle,

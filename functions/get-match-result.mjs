@@ -3,6 +3,6 @@ export default ( { routePathPattern, nowRoutePath } ) => {
     return routePathPattern.match( nowRoutePath )
     
   } catch ( error ) {
-    console.log( error )
+    console.error( error )
   }
 }

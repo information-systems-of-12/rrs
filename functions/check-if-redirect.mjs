@@ -11,19 +11,14 @@ export default ( { configuration, providerConfiguration, routesStructure, routeO
 
     for ( const redirect of routeObject.redirects ){
 
-      
-
 
       if ( Array.isArray( redirect ) ){
         for ( const ro of redirect ){
+
           /**
           @param { function } ro.if - callback - predicate
           @param { string } ro.path - redirection path
           **/
-         
-
-          
-
           if ( ro.if && Object.prototype.toString.call( ro.if ) == '[object Function]' ){
             
             const result = ro.if( { configuration, providerConfiguration, routesStructure, routeObject, services } )
