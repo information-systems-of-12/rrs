@@ -63,7 +63,8 @@ const recursive = ( currentPath, root, _i, _path, additional, parentComponent ) 
     if ( root.path === '/' ){
       _PATH = _path
     } else if ( root.path ){
-      _PATH = _path + '/' + root.path.replace( /[\/]/g, '' )
+      _PATH = _path + '/' + root.path.replace( /^[\/]+/g, '' ).replace( /[\/]+$/g, '' )
+      
     } else if ( !root.path ){
       _PATH = _path
     } else {

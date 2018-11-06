@@ -6,7 +6,9 @@ export default ( routesStructure, currentPath ) => {
 
   let matchResult = false
   const routeObject = routesStructure.find( ( route, index ) => {
+    
     matchResult = getMatchResult( { routePathPattern: route.fullPathRegularExpression, nowRoutePath: formattedCurrentPath } )
+ 
     if ( matchResult ){
       return true
     }

@@ -54,7 +54,8 @@ const recursive = ( routesStructure, root, _i, _path, parentPaths, parentCompone
     if ( root.path === '/' ){
       _PATH = _path
     } else if ( root.path ){
-      _PATH = _path + '/' + root.path.replace( /[\/]/g, '' )
+      _PATH = _path + '/' + root.path.replace( /^[\/]+/g, '' ).replace( /[\/]+$/g, '' )
+
     } else if ( !root.path ){
       _PATH = _path
     } else {

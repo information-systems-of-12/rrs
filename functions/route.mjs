@@ -71,6 +71,7 @@ export default class Route extends Component {
       const { pathParameters, pathSearchParameters } = getPathParameters( routeStructureCheckingResult.matchResult )
       nextState.pathParameters = pathParameters
       nextState.pathSearchParameters = pathSearchParameters
+      
     }
 
     if ( nextProps.type === CONSTANTS.ROUTE_COMPONENT_TYPES.LAYOUT ){

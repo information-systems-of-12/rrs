@@ -98,7 +98,7 @@ export default class Handler extends Component {
     }
 
     if ( this.props.onPathChange ){
-      const redirectPath = await this.props.onPathChange( { currentPath: window.location.pathname + window.location.search } )
+      const redirectPath = await this.props.onPathChange( { currentPath: currentPath } )
       if ( redirectPath ){
         window.history.pushState( {}, redirectPath, redirectPath )
       }
@@ -121,7 +121,7 @@ export default class Handler extends Component {
     const findRouteObjectResult = findRouteObject( routesStructure, currentPath )
     const routeObject = findRouteObjectResult.routeObject
     const matchResult = findRouteObjectResult.matchResult
-    
+   
     /*
     current route
     */
@@ -130,7 +130,7 @@ export default class Handler extends Component {
       const findRouteObjectResult2 = !isFromRouteComponent ? checkIfRedirect( { configuration: this.props.configuration, providerConfiguration: this.props.providerConfiguration, routesStructure, routeObject, services: this.props.services } ) : {}
       const routeObject2 = findRouteObjectResult2.routeObject 
       const matchResult2 = findRouteObjectResult2.matchResult
-      
+    
       /*
       redirected route
       */
