@@ -2,7 +2,7 @@ import * as React from 'react'
 const Component = React.default.Component
 const createElement = React.default.createElement
 
-import { MESSAGES, PREVIOUSLY_REQUESTED_PATH_KEY } from './constants.mjs'
+import { MESSAGES, PREVIOUSLY_REQUESTED_PATH_KEY, ROUTE_COMPONENT_TYPES } from './constants.mjs'
 import findRouteObject from './find-route-object.mjs'
 import checkIfRedirect from './check-if-redirect.mjs'
 
@@ -65,9 +65,9 @@ export default class Handler extends Component {
   }
 
 
-  async pushHistoryObject( path ){
+  async pushHistoryObject( path, thisRouteObject ){
     
-    const checkingResult = this.checkCurrentPathOnClient( this.routesStructure, path )
+    const checkingResult = this.checkCurrentPathOnClient( this.routesStructure, path, thisRouteObject )
 
     const currentPath = window.location.pathname + window.location.search
     
@@ -117,7 +117,7 @@ export default class Handler extends Component {
   }
 
 
-  checkCurrentPathOnClient( routesStructure, currentPath, isFromRouteComponent ){
+  checkCurrentPathOnClient( routesStructure, currentPath, thisRouteObject ){
     const findRouteObjectResult = findRouteObject( routesStructure, currentPath )
     const routeObject = findRouteObjectResult.routeObject
     const matchResult = findRouteObjectResult.matchResult
@@ -126,23 +126,28 @@ export default class Handler extends Component {
     current route
     */
     if ( routeObject ){
+      // debugger
       // const findRouteObjectResult2 = checkIfRedirect( routesStructure, routeObject, this.props.services )
-      const findRouteObjectResult2 = !isFromRouteComponent ? checkIfRedirect( { configuration: this.props.configuration, providerConfiguration: this.props.providerConfiguration, routesStructure, routeObject, services: this.props.services } ) : {}
+      // const findRouteObjectResult2 = !isFromRouteComponent ? checkIfRedirect( { configuration: this.props.configuration, providerConfiguration: this.props.providerConfiguration, routesStructure, routeObject, services: this.props.services } ) : {}
+      const findRouteObjectResult2 = thisRouteObject.path === routeObject.path && thisRouteObject.type === ROUTE_COMPONENT_TYPES.VIEW ? checkIfRedirect( { configuration: this.props.configuration, providerConfiguration: this.props.providerConfiguration, routesStructure, routeObject, services: this.props.services } ) : {}
       const routeObject2 = findRouteObjectResult2.routeObject 
       const matchResult2 = findRouteObjectResult2.matchResult
-    
+      // debugger
+
       /*
       redirected route
       */
       if ( routeObject2 ){
+        
         let previouslyRequestedURL = null
         const previouslyRequestedURLQueryFieldIndex = currentPath.indexOf( PREVIOUSLY_REQUESTED_PATH_KEY )
+
         if ( previouslyRequestedURLQueryFieldIndex != -1 ){
           previouslyRequestedURL = currentPath.slice( previouslyRequestedURLQueryFieldIndex + PREVIOUSLY_REQUESTED_PATH_KEY.length )
         }
 
         if ( previouslyRequestedURL ){
-          const findRouteObjectResult3 = findRouteObject( state.routesStructure, previouslyRequestedURL )
+          const findRouteObjectResult3 = findRouteObject( routesStructure, previouslyRequestedURL )
           const routeObject3 = findRouteObjectResult3.routeObject
           const matchResult3 = findRouteObjectResult3.matchResult
 
@@ -167,7 +172,7 @@ export default class Handler extends Component {
       }
 
     } else {
-      return { path: null, routeObject: null, matchResult: null, documentTitle: MESSAGES.COMPONENTS_NOT_FOUND, isRedirected: true }
+      return { path: null, routeObject: null, matchResult: null, documentTitle: MESSAGES.COMPONENTS_NOT_FOUND, isRedirected: false }
       
     }
 

@@ -32,9 +32,18 @@ export default class Route extends Component {
 
     const currentPath = typeof window === 'undefined' ? this.props.currentPath : window.location.pathname + window.location.search
     nextState.currentPath = currentPath
-    const routeStructureCheckingResult = typeof window !== 'undefined' ? this.props.checkCurrentPathOnClient( this.props.routesStructure, currentPath, true ) : null
 
-    if ( routeStructureCheckingResult && routeStructureCheckingResult.matchResult ){
+    const thisRouteObject = {
+      path: this.props.path,
+      type: this.props.type
+    }
+
+    const routeStructureCheckingResult = typeof window !== 'undefined' ? this.props.checkCurrentPathOnClient( this.props.routesStructure, currentPath, thisRouteObject ) : null
+
+    if ( routeStructureCheckingResult && routeStructureCheckingResult.isRedirected ){
+      this.props.pushHistoryObject( routeStructureCheckingResult.path, thisRouteObject )
+
+    } else if ( routeStructureCheckingResult && routeStructureCheckingResult.matchResult ){
       const { pathParameters, pathSearchParameters } = getPathParameters( routeStructureCheckingResult.matchResult )
       nextState.pathParameters = pathParameters
       nextState.pathSearchParameters = pathSearchParameters
@@ -64,10 +73,18 @@ export default class Route extends Component {
     
     const currentPath = typeof window === 'undefined' ? nextProps.currentPath : window.location.pathname + window.location.search
     nextState.currentPath = currentPath
-    const routeStructureCheckingResult = typeof window !== 'undefined' ? nextProps.checkCurrentPathOnClient( nextProps.routesStructure, currentPath, true ) : null
 
+    const thisRouteObject = {
+      path: nextProps.path,
+      type: nextProps.type
+    }
 
-    if ( routeStructureCheckingResult && routeStructureCheckingResult.matchResult ){
+    const routeStructureCheckingResult = typeof window !== 'undefined' ? nextProps.checkCurrentPathOnClient( nextProps.routesStructure, currentPath, thisRouteObject ) : null
+    
+    if ( routeStructureCheckingResult && routeStructureCheckingResult.isRedirected ){
+      nextProps.pushHistoryObject( routeStructureCheckingResult.path, thisRouteObject )
+
+    } else if ( routeStructureCheckingResult && routeStructureCheckingResult.matchResult ){
       const { pathParameters, pathSearchParameters } = getPathParameters( routeStructureCheckingResult.matchResult )
       nextState.pathParameters = pathParameters
       nextState.pathSearchParameters = pathSearchParameters
@@ -110,7 +127,10 @@ export default class Route extends Component {
 
   render() {
 
-
+    const thisRouteObject = {
+      path: this.props.path,
+      type: this.props.type
+    }
 
     if ( this.state.matchResult ){
       if ( this.props.parentComponent ){
@@ -120,7 +140,7 @@ export default class Route extends Component {
             currentPath: this.state.currentPath,
             pathParameters: this.state.pathParameters,
             pathSearchParameters: this.state.pathSearchParameters,
-            redirect: this.props.pushHistoryObject,
+            redirect: path => this.props.pushHistoryObject( path, thisRouteObject ),
             // setDocumentTitle: this.props.setDocumentTitle,
             services: this.props.services,
             providerConfiguration: this.props.providerConfiguration
@@ -130,7 +150,7 @@ export default class Route extends Component {
               currentPath: this.state.currentPath,
               pathParameters: this.state.pathParameters,
               pathSearchParameters: this.state.pathSearchParameters,
-              redirect: this.props.pushHistoryObject,
+              redirect: path => this.props.pushHistoryObject( path, thisRouteObject ),
               // setDocumentTitle: this.props.setDocumentTitle,
               services: this.props.services,
               providerConfiguration: this.props.providerConfiguration
@@ -146,7 +166,7 @@ export default class Route extends Component {
           currentPath: this.state.currentPath,
           pathParameters: this.state.pathParameters,
           pathSearchParameters: this.state.pathSearchParameters,
-          redirect: this.props.pushHistoryObject,
+          redirect: path => this.props.pushHistoryObject( path, thisRouteObject ),
           // setDocumentTitle: this.props.setDocumentTitle,
           services: this.props.services,
           providerConfiguration: this.props.providerConfiguration
