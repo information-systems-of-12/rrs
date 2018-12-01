@@ -70,29 +70,44 @@ export default class Handler extends Component {
     const checkingResult = this.checkCurrentPathOnClient( this.routesStructure, path, thisRouteObject )
 
     const currentPath = window.location.pathname + window.location.search
-    
-
+    // this.setDocumentTitle( checkingResult.documentTitle )
+    // debugger
     if ( checkingResult.isRedirected === true ){
-
-      
+      // debugger
+      // this.setDocumentTitle( '' )
+      // debugger
       // const isStartsWith = currentPath.startsWith( checkingResult.path )
 
       // if ( !isStartsWith ){
       if ( currentPath === checkingResult.path ){
-        window.history.pushState( {}, checkingResult.path, checkingResult.path )
-
+        // debugger
+        // this.setDocumentTitle( checkingResult.documentTitle )
+        window.history.pushState( {}, checkingResult.documentTitle, checkingResult.path )
+        // this.setDocumentTitle( checkingResult.documentTitle )
+        // debugger
+        // debugger
+        // this.setDocumentTitle( checkingResult.documentTitle )
+        // debugger
       } else {
+        // debugger
         return
 
       }
       
     } else {
       if ( currentPath === path ){
+        // debugger
         return
         
       } else {
-        window.history.pushState( {}, path, path )
-
+        // debugger
+        // this.setDocumentTitle( checkingResult.documentTitle )
+        window.history.pushState( {}, checkingResult.documentTitle, path )
+        // debugger
+        this.setDocumentTitle( null )
+        // debugger
+        // this.setDocumentTitle( checkingResult.documentTitle )
+        // debugger
       }
       
     }
@@ -100,12 +115,15 @@ export default class Handler extends Component {
     if ( this.props.onPathChange ){
       const redirectPath = await this.props.onPathChange( { currentPath: currentPath } )
       if ( redirectPath ){
+        // debugger
+        // this.setDocumentTitle( checkingResult.documentTitle )
         window.history.pushState( {}, redirectPath, redirectPath )
       }
     }
 
+    // debugger
     this.setDocumentTitle( checkingResult.documentTitle )
-
+    // debugger
     // const layouts = this.routeComponentInstances.filter( i => i.props.type === 'LAYOUT_ROUTE_COMPONENT' )
     // const views = this.routeComponentInstances.filter( i => i.props.type === 'VIEW_ROUTE_COMPONENT' )
 
