@@ -18,6 +18,8 @@ export default parameters => {
     routesScheme,
     createRoutesScheme,
     path,
+    pathParameters,
+    pathSearchParameters,
     services,
     onPathChange,
     checkCurrentPathOnClient,
@@ -30,6 +32,8 @@ export default parameters => {
 
   
   const additional = {
+    pathParameters,
+    pathSearchParameters,
     services,
     onPathChange,
     checkCurrentPathOnClient,

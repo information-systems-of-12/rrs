@@ -12,7 +12,11 @@ import checkLayoutMatchResult from './check-layout-match-result.mjs'
 export default class Route extends Component {
   constructor( props ){
     super( props )
-    this.state = {}
+    this.state = {
+      currentPath: props.currentPath,
+      pathParameters: props.pathParameters,
+      pathSearchParameters: props.pathSearchParameters
+    }
     this.handlePopState = this.handlePopState.bind( this )
   }
 
