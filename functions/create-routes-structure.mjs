@@ -64,24 +64,6 @@ const recursive = ( routesStructure, root, _i, _path, parentPaths, parentCompone
    
 
 
-    // if ( !root.component && !root.path ){
-    //   routesStructure.push( {
-    //     alias: root.alias,
-
-    //     path: root.path,
-    //     fullPath: _PATH,
-    //     fullPathRegularExpression: root.alias === '*' || root.path === '*' ? new URLPattern( _PATH ) : new URLPattern( _PATH + '(/)(?*)' ),
-        
-    //     component: root.component,
-    //     documentTitle: root.documentTitle,
-        
-    //     parentPaths,
-    //     parentComponents,
-    //     parentRedirects: root.redirect ? [ ...parentRedirects, root.redirect ] : parentRedirects
-    //   } )
-
-    // }
-
     let _parentRedirects = null
 
     if ( root.redirect ){
@@ -106,12 +88,10 @@ const recursive = ( routesStructure, root, _i, _path, parentPaths, parentCompone
         
         component: root.component,
         documentTitle: root.documentTitle,
+        setDocumentTitle: root.setDocumentTitle,
         
-        // parentPaths,
-        // parentComponents,
         parentPaths: root.path ? [ ...parentPaths, root.path ] : parentPaths,
         parentComponents: [ ...parentComponents, root.component ],
-        // parentRedirects: root.redirect ? [ ...parentRedirects, ...root.redirect ] : parentRedirects
         parentRedirects: _parentRedirects
       } )
 
@@ -128,13 +108,10 @@ const recursive = ( routesStructure, root, _i, _path, parentPaths, parentCompone
         
         component: root.component,
         documentTitle: root.documentTitle,
-        
-        // parentPaths: [ ...parentPaths, root.path ],
-        // parentComponents: [ ...parentComponents, root.component ],
-        // parentRedirects: root.redirect ? [ ...parentRedirects, root.redirect ] : parentRedirects
+        setDocumentTitle: root.setDocumentTitle,
+
         parentPaths: [ ...parentPaths ],
         parentComponents: [ ...parentComponents ],
-        // parentRedirects: root.redirect ? [ ...parentRedirects, root.redirect ] : parentRedirects
         parentRedirects: _parentRedirects
       } )
 
@@ -147,8 +124,7 @@ const recursive = ( routesStructure, root, _i, _path, parentPaths, parentCompone
 
         const _parentPaths = root.path ? [ ...parentPaths, root.path ] : parentPaths
         const _parentComponents = [ ...parentComponents, root.component ]
-        // const _parentRedirects = root.redirect ? [ ...parentRedirects, root.redirect ] : parentRedirects
-  
+       
         return recursive( routesStructure, r, _i + i, _PATH, _parentPaths, _parentComponents, _parentRedirects )
       } )
       
