@@ -36,7 +36,7 @@ export default class Handler extends Component {
       ? createRoutesComposition( { 
         configuration: this.props.configuration,
         providerConfiguration: this.props.providerConfiguration, 
-        routesScheme: null,
+        routesScheme: this.props.routesScheme,
         createRoutesScheme: this.props.createRoutesScheme,
         path: this.props.path,
         services: this.props.services,
